@@ -1,10 +1,8 @@
 /*
-In this ROOT function we generate a distribution according to sin(x)
-between 0 and pi
 To run do:
 root
-.L rootgenerate_sinx.C
-rootfuncgenerate(10000)
+.L EG_v2.C
+rootfuncgenerate(10000, 10, 0.04)
 */
 // include C++ STL headers
 #include <iostream>
@@ -17,18 +15,19 @@ using namespace std;
 #include <TMath.h> // math functions
 #include <TCanvas.h> // canvas object
 
-//________________________________________________________________________
-void rootfuncgenerate(Int_t nEvents, Int_t nTracks, Double_t v2) {
+
+
+void rootfuncgenerate(Int_t nEvents = 10000, Int_t nTracks = 10, Double_t v2 = 0.04) {
 
     ofstream file("phi_dist.dat");
     
     cout << "Generating " << nEvents << " events with " << nTracks << " tracks" << endl << endl;
 
     // create histogram that we will fill with random values
-    TH1D* hPhi = new TH1D("hPhi", "ROOT func generated distribution; x; Counts", 100, 0, TMath::Pi());
+    TH1D* hPhi = new TH1D("hPhi", "ROOT func generated distribution; x; Counts", 100, 0, TMath::TwoPi());
 
     // Define the function we want to generate
-    TF1* sinFunc = new TF1("sinFunc", "1+(2*[0]*cos(2*x))", 0, TMath::Pi());
+    TF1* sinFunc = new TF1("sinFunc", "1+(2*[0]*cos(2*x))", 0, TMath::TwoPi());
     sinFunc->SetParameter(0, v2);
     sinFunc->SetParName(0, "v2");
     
@@ -59,7 +58,7 @@ void rootfuncgenerate(Int_t nEvents, Int_t nTracks, Double_t v2) {
     hPhi->Draw();
     // create 1d function that we will use to fit our generated data to ensure
     // that the generation works
-    TF1* fitFunc = new TF1("fitFunc", "[0]*(1+2*[1]*cos(2*x))", 0, TMath::Pi());
+    TF1* fitFunc = new TF1("fitFunc", "[0]*(1+2*[1]*cos(2*x))", 0, TMath::TwoPi());
     fitFunc->SetParameter(0, 10);
     fitFunc->SetParameter(1, v2);
     fitFunc->SetLineColor(kRed);
